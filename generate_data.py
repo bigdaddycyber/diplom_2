@@ -66,3 +66,6 @@ def create_order_for_authorisation_user(token):
 def create_two_orders(token):
     order = [create_order_for_authorisation_user(token), create_order_for_authorisation_user(token)]
     return order
+
+def delete_user(token):
+    requests.delete('https://stellarburgers.nomoreparties.site/api/auth/user', headers={"Authorization": token})

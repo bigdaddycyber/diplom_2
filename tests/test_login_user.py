@@ -2,6 +2,7 @@ import allure
 import pytest
 from generate_data import *
 from data_fake import *
+from data import *
 
 class TestLoginUser:
     
@@ -12,15 +13,22 @@ class TestLoginUser:
             'email': email,
             'password': password
         }
-        responce = requests.post('https://stellarburgers.nomoreparties.site/api/auth/login', data=payload)
-        assert responce.status_code == 200 
+        response = requests.post((Url.site + Api.login), data=payload)
+        token = response.json()["accessToken"]
+        assert 200 == response.status_code and response.json()["success"] == True 
+        generate_data_new_user.delete_user(token) 
+    
     
     @allure.title('Создание пользователя с некорректным email')    
     def test_login_user_incorrect_login(self):
-        password = generate_data_new_user()
+        password, token = generate_data_new_user()
         payload = {
             'email': Data.NOCORRECT_EMAIL,
             'password': password
         }
-        responce = requests.post('https://stellarburgers.nomoreparties.site/api/auth/login', data=payload)
-        assert responce.status_code == 401
+        response = requests.post((Url.site + Api.login), data=payload)
+        assert 401 == response.status_code and response.json() == {
+                                                                   "success": False,
+                                                                   "message": "email or password are incorrect"
+                                                                   }
+        generate_data_new_user.delete_user(token)

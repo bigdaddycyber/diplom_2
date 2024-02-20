@@ -1,7 +1,7 @@
 
 
 class Data:
-    NOCORRECT_EMAIL = '1212jj3jk23@llas.csodksaddklsdkdkl'
+    NOCORRECT_EMAIL = 'ewfefsfdf5566ysfsfs@test.dsdfsf32'
     
 
 
