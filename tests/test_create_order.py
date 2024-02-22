@@ -17,7 +17,6 @@ class TestCreateOrder:
         }
         response = requests.post((Url.site + Api.orders), headers={'Autorisation': token}, data=payload)
         assert 200 == response.status_code and response.json()['success'] == True
-        generate_data_new_user.delete_user(token)
     
     @allure.title('Создание заказа для неавторизованого пользователя с игредиентами')    
     def test_create_order_without_authorization(self):

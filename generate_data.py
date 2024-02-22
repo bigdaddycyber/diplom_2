@@ -28,7 +28,8 @@ def create_new_user():
     }
     response = requests.post('https://stellarburgers.nomoreparties.site/api/auth/register', data=payload )
     token = response.json()["accessToken"]
-    return token, email, password, user
+    yield token, email, password, user
+    delete_user(token)
 
 def get_ingredients_id():
     responce = requests.get('https://stellarburgers.nomoreparties.site/api/ingredients')

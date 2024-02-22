@@ -18,7 +18,6 @@ class TestCreateUser:
         response = requests.post((Url.site + Api.register), data=payload)
         token = response.json()["accessToken"]
         assert 200 == response.status_code and response.json()["success"] == True
-        generate_data_new_user.delete_user(token)
         
         
     

@@ -12,7 +12,6 @@ class TestOrderForUser:
         orders = create_two_orders(token)
         response = requests.get((Url.site + Api.orders), headers={'Autorisation': token})
         assert 200 == response.status_code and response.json()['orders']['number']
-        generate_data_new_user.delete_user(token)
         
         
     @allure.title('Получение списка заказов у незарегистрированного пользователя')   

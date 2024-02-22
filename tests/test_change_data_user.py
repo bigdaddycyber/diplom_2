@@ -1,5 +1,7 @@
 import allure
 from generate_data import *
+from data import *
+
 
 class TestChangeDataUser:
     
@@ -10,9 +12,8 @@ class TestChangeDataUser:
         payload = {
             'email': change_email
         }
-        response = requests.patch('https://stellarburgers.nomoreparties.site/api/auth/user', headers={'Autorisation': token}, data=payload)
+        response = requests.patch((Url.site + Api.user), headers={'Autorisation': token}, data=payload)
         assert 200 == response.status_code and response.json()["success"] == True
-        generate_data_new_user.delete_user(token)
         
     
     @allure.title('Изменения почты у незарегистрированного пользователя')    
@@ -26,10 +27,9 @@ class TestChangeDataUser:
             'name': change_user,
             'password': change_password
         }
-        response = requests.patch('https://stellarburgers.nomoreparties.site/api/auth/user', headers={"Autorisation": ""}, data=payload)
+        response = requests.patch((Url.site + Api.user), headers={"Autorisation": ""}, data=payload)
         assert 403 == response.status_code and response.json() == {
                                                                    "success": False,
                                                                    "message": "User with such email already exists"
                                                                    }
-        generate_data_new_user.delete_user(token) 
         
