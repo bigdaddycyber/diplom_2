@@ -7,7 +7,7 @@ from data import *
 class TestCreateUser:
     
     @allure.title('Создание нового пользователя')
-    def test_create_user_sicessfull(self):
+    def test_create_user_sicessfull(self, delete_user):
         token, email, user, password = generate_data_new_user()
         payload = {
             'email': email,
@@ -22,7 +22,7 @@ class TestCreateUser:
         
     
     @allure.title('Создание пользователя с существующей почтой')    
-    def test_create_two_same_user_error(self):
+    def test_create_two_same_user_error(self, delete_user):
         email, user, password = generate_data_new_user()
         payload = {
             'email': email,

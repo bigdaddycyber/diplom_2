@@ -7,7 +7,7 @@ from data import *
 class TestOrderForUser:
     
     @allure.title('Получение списка заказов зарегистрированного пользователя')
-    def test_get_orders_for_registry_user(self):
+    def test_get_orders_for_registry_user(self, delete_user):
         token, email, user, password= create_new_user()
         orders = create_two_orders(token)
         response = requests.get((Url.site + Api.orders), headers={'Autorisation': token})

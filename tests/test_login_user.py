@@ -7,7 +7,7 @@ from data import *
 class TestLoginUser:
     
     @allure.title('Проверка существующего пользователя')
-    def test_login_existing_user(self):
+    def test_login_existing_user(self, delete_user):
         email, password = generate_data_new_user()
         payload = {
             'email': email,
