@@ -7,24 +7,26 @@ from data import *
 class TestCreateOrder:
     
     @allure.title('Создание заказа для авторизованного пользователя с ингредиентами')
-    def test_create_order_with_authorization_and_ingredients(self):
-        ingredients_id = get_ingredients_id()
-        token, email, user, password = create_new_user()
-        ingredients = get_2_ingredients(ingredients_id)
-        
+    def test_create_order_with_authorization_and_ingredients(self, login_user):
+        get_ingredients = requests.get((Url.site + Api.ingredients ))
+        ingredient_1 = get_ingredients.json()["data"][0]["_id"]
+        ingredient_2 = get_ingredients.json()["data"][1]["_id"]
+        ingredient_3 = get_ingredients.json()["data"][2]["_id"]
         payload = {
-            "ingredients": ingredients
+            "ingredients": [ingredient_1, ingredient_2, ingredient_3]
         }
-        response = requests.post((Url.site + Api.orders), headers={'Autorisation': token}, data=payload)
+        
+        response = requests.post((Url.site + Api.orders), data=payload)
         assert 200 == response.status_code and response.json()['success'] == True
         
     
     @allure.title('Создание заказа для неавторизованого пользователя с игредиентами')    
     def test_create_order_without_authorization(self):
-        ingredients_id = get_ingredients_id()
-        ingredients = get_2_ingredients(ingredients_id)
+        get_ingredients = requests.get((Url.site + Api.ingredients ))
+        ingredient_1 = get_ingredients.json()["data"][0]["_id"]
+        ingredient_2 = get_ingredients.json()["data"][1]["_id"]
         payload = {
-            "ingredients": ingredients
+            "ingredients": [ingredient_1, ingredient_2]
         }
         response = requests.post((Url.site + Api.orders), data=payload)
         assert 200 == response.status_code and response.json()['success'] == True
@@ -43,14 +45,12 @@ class TestCreateOrder:
         
         
     @allure.title('Создание заказа с некорректными ингредиентами')
-    def test_create_order_with_incorrect_ihgredients_id(self):
-        ingredient_id = get_ingredients_id()
-        ingredients = get_incorrect_ingredients_id(ingredient_id)
+    def test_create_order_with_incorrect_ihgredients_id(self, login_user):
         payload = {
-            "ingredients": ingredients
+            "ingredients": ["534534243232g4234"]
         }
-        responce = requests.post('https://stellarburgers.nomoreparties.site/api/orders', data=payload)
-        assert responce.status_code == 500
+        responce = requests.post((Url.site + Api.orders), data=payload)
+        assert 500 == responce.status_code
         
 
         

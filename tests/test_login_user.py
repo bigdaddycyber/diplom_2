@@ -7,23 +7,19 @@ from data import *
 class TestLoginUser:
     
     @allure.title('Проверка существующего пользователя')
-    def test_login_existing_user(self, delete_user):
-        email, password = generate_data_new_user()
-        payload = {
-            'email': email,
-            'password': password
-        }
-        response = requests.post((Url.site + Api.login), data=payload)
-        token = response.json()["accessToken"]
-        assert 200 == response.status_code and response.json()["success"] == True 
+    def test_login_existing_user(self, login_user):
+        assert 200 == login_user.status_code and login_user.json()["success"] == True 
     
     
     @allure.title('Создание пользователя с некорректным email')    
-    def test_login_user_incorrect_login(self):
-        password, token = generate_data_new_user()
+    def test_login_user_incorrect_login(self, create_new_user):
+        email = Data.NOCORRECT_EMAIL
+        password = 'testest123'
+        name = 'Cucaracha'
         payload = {
-            'email': Data.NOCORRECT_EMAIL,
-            'password': password
+            "email": email,
+            "password": password,
+            "name" : name
         }
         response = requests.post((Url.site + Api.login), data=payload)
         assert 401 == response.status_code and response.json() == {

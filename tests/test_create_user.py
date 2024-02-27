@@ -1,45 +1,39 @@
 import allure
 import requests
 from generate_data import *
-from generate_data import generate_data_new_user, generate_random_string
 from data import *
+from faker import Faker
+
+fake = Faker()
 
 class TestCreateUser:
     
     @allure.title('Создание нового пользователя')
-    def test_create_user_sicessfull(self, delete_user):
-        token, email, user, password = generate_data_new_user()
-        payload = {
-            'email': email,
-            'password': password,
-            'name': user
-        }
-        
-        response = requests.post((Url.site + Api.register), data=payload)
-        token = response.json()["accessToken"]
-        assert 200 == response.status_code and response.json()["success"] == True
+    def test_create_user_sicessfull(self, create_new_user):    
+        assert 200 == create_new_user.status_code and create_new_user.json()["success"] == True
         
         
-    
     @allure.title('Создание пользователя с существующей почтой')    
-    def test_create_two_same_user_error(self, delete_user):
-        email, user, password = generate_data_new_user()
+    def test_create_two_same_user_error(self):
+        email = 'testtestcucaracha@gmail.com'
+        password = 'testest123'
+        name = 'Cucaracha'
         payload = {
             'email': email,
             'password': password,
-            'name': user 
+            'name': name
         }
-        
-        response1 = requests.post((Url.site + Api.register), data=payload)
         response2 = requests.post((Url.site + Api.register), data=payload)
-        assert 403 == response2.status_code and response2["message"] == 'User already exists'
+        assert 403 == response2.status_code
+        assert response2.json()["message"] == 'User already exists'
     
     @allure.title('Создание пользователя без имени')    
     def test_create_user_with_empty_field(self):
-        email, password = generate_data_new_user()
+        email = fake.email()
+        name = fake.first_name()
         payload = {
             'email': email,
-            'password': password
+            'name': name
         }
         response = requests.post((Url.site + Api.register), data=payload)
-        assert 400 == response.status_code and response['message'] == 'Недостаточно данных для создания учетной записи'
+        assert 403 == response.status_code and response.json()['message'] == 'Email, password and name are required fields'
